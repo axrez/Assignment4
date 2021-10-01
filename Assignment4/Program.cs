@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.IO;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Assignment4.Entities;
 
 namespace Assignment4
 {
@@ -11,6 +13,13 @@ namespace Assignment4
         {
             var configuration = LoadConfiguration();
             var connectionString = configuration.GetConnectionString("Kanban");
+
+            var optionsBuilder = new DbContextOptionsBuilder<KanbanContext>().UseSqlServer(connectionString);
+            using var context = new KanbanContext(optionsBuilder.Options);
+
+
+
+
 
             using var connection = new SqlConnection(connectionString);
             var cmdText = "SELECT * FROM Task";
@@ -28,6 +37,8 @@ namespace Assignment4
                 };
                 Console.WriteLine(test);
             }
+
+
         }
 
         static IConfiguration LoadConfiguration()
