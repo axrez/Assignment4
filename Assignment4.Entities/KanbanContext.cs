@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using Assignment4.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 
 namespace Assignment4.Entities
@@ -13,6 +15,13 @@ namespace Assignment4.Entities
         public DbSet<User> Users { get; set; }
 
         public KanbanContext(DbContextOptions<KanbanContext> options) : base(options) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<Task>()
+                .Property(e => e.state)
+                .HasConversion(new EnumToStringConverter<State>());
+        }
     }
 
     public class KanbanContextFactory : IDesignTimeDbContextFactory<KanbanContext>
