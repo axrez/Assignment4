@@ -24,23 +24,4 @@ namespace Assignment4.Entities
         }
     }
 
-    public class KanbanContextFactory : IDesignTimeDbContextFactory<KanbanContext>
-    {
-        public KanbanContext CreateDbContext(string[] args)
-        {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddUserSecrets<KanbanContext>()
-                .Build();
-
-            var connectionString = configuration.GetConnectionString("Kanban");
-
-            Console.WriteLine(connectionString);
-
-            var optionsBuilder = new DbContextOptionsBuilder<KanbanContext>()
-                .UseSqlServer(connectionString);
-
-            return new KanbanContext(optionsBuilder.Options);
-        }
-    }
 }

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment4.Entities.Migrations
 {
     [DbContext(typeof(KanbanContext))]
-    [Migration("20211001130946_pleaseWork")]
-    partial class pleaseWork
+    [Migration("20211006120802_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,11 +27,13 @@ namespace Assignment4.Entities.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.HasKey("Name");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Assignment4.Entities.Task", b =>
@@ -49,12 +51,39 @@ namespace Assignment4.Entities.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("state")
-                        .HasColumnType("int");
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("state")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserEmail");
+
                     b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("Assignment4.Entities.User", b =>
+                {
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Email");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TagTask", b =>
@@ -72,6 +101,13 @@ namespace Assignment4.Entities.Migrations
                     b.ToTable("TagTask");
                 });
 
+            modelBuilder.Entity("Assignment4.Entities.Task", b =>
+                {
+                    b.HasOne("Assignment4.Entities.User", null)
+                        .WithMany("tasks")
+                        .HasForeignKey("UserEmail");
+                });
+
             modelBuilder.Entity("TagTask", b =>
                 {
                     b.HasOne("Assignment4.Entities.Tag", null)
@@ -85,6 +121,11 @@ namespace Assignment4.Entities.Migrations
                         .HasForeignKey("tasksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Assignment4.Entities.User", b =>
+                {
+                    b.Navigation("tasks");
                 });
 #pragma warning restore 612, 618
         }

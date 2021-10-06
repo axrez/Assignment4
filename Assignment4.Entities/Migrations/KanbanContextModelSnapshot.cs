@@ -25,7 +25,9 @@ namespace Assignment4.Entities.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.HasKey("Name");
 
@@ -50,8 +52,9 @@ namespace Assignment4.Entities.Migrations
                     b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("state")
-                        .HasColumnType("int");
+                    b.Property<string>("state")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -67,7 +70,9 @@ namespace Assignment4.Entities.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()

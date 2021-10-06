@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Assignment4.Core;
 
 namespace Assignment4.Entities
@@ -6,6 +8,7 @@ namespace Assignment4.Entities
     public class Task
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -16,6 +19,6 @@ namespace Assignment4.Entities
 
         public State state { get; set; }
 
-        public Tag[] tags { get; set; }
+        public ICollection<Tag> tags { get; set; }
     }
 }
