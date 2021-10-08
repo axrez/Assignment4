@@ -2,7 +2,7 @@
 
 namespace Assignment4.Entities.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitailMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

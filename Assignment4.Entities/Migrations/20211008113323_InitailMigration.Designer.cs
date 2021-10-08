@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment4.Entities.Migrations
 {
     [DbContext(typeof(KanbanContext))]
-    [Migration("20211006120802_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20211008113323_InitailMigration")]
+    partial class InitailMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
