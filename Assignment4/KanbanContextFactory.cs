@@ -23,5 +23,32 @@ namespace Assignment4
 
             return new KanbanContext(optionsBuilder.Options);
         }
+
+        public static void Seed(KanbanContext context)
+        {
+            context.Database.ExecuteSqlRaw("DELETE dbo.TagTask");
+            context.Database.ExecuteSqlRaw("DELETE dbo.Tasks");
+            context.Database.ExecuteSqlRaw("DELETE dbo.Tags");
+            context.Database.ExecuteSqlRaw("DELETE dbo.Users");
+            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('dbo.Tags', RESEED, 0)");
+            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('dbo.Tasks', RESEED, 0)");
+            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('dbo.Users', RESEED, 0)");
+
+            var easyTag = new Tag { Name = "Easy" };
+            var mediumTag = new Tag { Name = "Medium" };
+            var hardTag = new Tag { Name = "Hard" };
+            var cumbersomeTag = new Tag { Name = "Cumbersome" };
+
+            var learnTask = new Task { Title = "Learn how to use ef framework", state = Core.State.Active, tags = new[] { hardTag, cumbersomeTag } };
+            var useTask = new Task { Title = "Create code with ef framework", state = Core.State.New, tags = new[] { easyTag } };
+
+            var emil = new User { Email = "emio@itu.dk", Name = "Emil", tasks = new[] { learnTask, useTask } };
+
+            context.Users.Add(
+                emil
+            );
+
+            context.SaveChanges();
+        }
     }
 }

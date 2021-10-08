@@ -29,6 +29,22 @@ namespace Assignment4.Entities
 
         public int Create(TaskDTO task)
         {
+            User userToAssignTo;
+
+            if (task.AssignedToId != null)
+            {
+                userToAssignTo = (from u in context.Users
+                                  where u.Id == task.AssignedToId
+                                  select new User
+                                  {
+                                      Email = u.Email,
+                                      Name = u.Name,
+                                      Id = u.Id,
+                                      tasks = u.tasks
+                                  }).FirstOrDefault();
+            }
+
+
             var taskToInsert = new Task
             {
                 Id = task.Id,
