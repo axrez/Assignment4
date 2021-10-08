@@ -21,6 +21,16 @@ namespace Assignment4.Entities
                 .Entity<Task>()
                 .Property(e => e.state)
                 .HasConversion(new EnumToStringConverter<State>());
+
+            modelBuilder
+                .Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder
+                .Entity<Tag>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
         }
     }
 

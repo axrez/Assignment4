@@ -80,6 +80,12 @@ namespace Assignment4.Entities.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tags_Name",
+                table: "Tags",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TagTask_tasksId",
                 table: "TagTask",
                 column: "tasksId");
@@ -88,6 +94,12 @@ namespace Assignment4.Entities.Migrations
                 name: "IX_Tasks_UserEmail",
                 table: "Tasks",
                 column: "UserEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

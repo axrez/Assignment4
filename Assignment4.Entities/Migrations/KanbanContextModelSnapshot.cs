@@ -31,6 +31,9 @@ namespace Assignment4.Entities.Migrations
 
                     b.HasKey("Name");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Tags");
                 });
 
@@ -80,6 +83,9 @@ namespace Assignment4.Entities.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Email");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
