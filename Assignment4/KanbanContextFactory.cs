@@ -1,4 +1,3 @@
-
 using System.IO;
 using Assignment4.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -30,9 +29,6 @@ namespace Assignment4
             context.Database.ExecuteSqlRaw("DELETE dbo.Tasks");
             context.Database.ExecuteSqlRaw("DELETE dbo.Tags");
             context.Database.ExecuteSqlRaw("DELETE dbo.Users");
-            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('dbo.Tags', RESEED, 0)");
-            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('dbo.Tasks', RESEED, 0)");
-            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('dbo.Users', RESEED, 0)");
 
             var easyTag = new Tag { Name = "Easy" };
             var mediumTag = new Tag { Name = "Medium" };
