@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,8 +18,14 @@ namespace Assignment4.Entities
 
         public string Description { get; set; }
 
+		public DateTime Created { get; set; }
+
+		public String AssignedToName { get; set; }
+
         public State state { get; set; }
 
         public ICollection<Tag> tags { get; set; }
+
+		public DateTime StateUpdated { get; set; }
     }
 }
