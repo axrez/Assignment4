@@ -17,6 +17,7 @@ namespace Assignment4.Entities.Tests
 		#region Setup
 		private readonly KanbanContext _context;
 		private readonly TaskRepository _repository;
+		private readonly DateTime _utcTime;
 
 		#region Tags
 		private readonly Tag assignment = new Tag { Name = "Assignment" };
@@ -110,8 +111,9 @@ namespace Assignment4.Entities.Tests
 
 			context.SaveChanges();
 
+			_utcTime = DateTime.UtcNow;
 			_context = context;
-			_repository = new TaskRepository(_context);
+			_repository = new TaskRepository(_context, _utcTime);
 		}
 
 		public void Dispose()
@@ -296,6 +298,155 @@ namespace Assignment4.Entities.Tests
 			var comparer = new TaskDTOComparer();
 			// Assert
 			Assert.Equal(expected, tasks, comparer);
+		}
+		#endregion
+		
+		#region Create
+		[Fact]
+		public void Created_Returns_Response_Created_And_Id_6()
+		{
+			// Arrange
+			var newTask = new TaskCreateDTO {
+				Title = "New Task",
+				AssignedToId = 1,
+				Description = "Unimaginative description.",
+				Tags = new[] { assignment.Name, confusing.Name }
+			};
+			// Act
+			var result = _repository.Create(newTask);
+			// Assert
+			Assert.Equal((Response.Created, 6), result);
+		}
+
+		[Fact]
+		public void Created_With_Nonexisting_User_Returns_Bad_Request()
+		{
+			// Arrange
+			var newTask = new TaskCreateDTO {
+				Title = "New Task",
+				AssignedToId = 3,
+				Description = "Unimaginative description.",
+				Tags = new[] { assignment.Name, confusing.Name }
+			};
+			// Act
+			var result = _repository.Create(newTask);
+			// Assert
+			Assert.Equal((Response.BadRequest, 0), result);
+		}
+
+		[Fact]
+		public void Created_Has_Correct_Created_And_State_Updated()
+		{
+			// Arrange
+			var newTask = new TaskCreateDTO {
+				Title = "New Task",
+				AssignedToId = 1,
+				Description = "Unimaginative description.",
+				Tags = new[] { assignment.Name, confusing.Name }
+			};
+			// Act
+			var result = _repository.Create(newTask);
+			// Assert
+			var createdTask = _repository.Read(result.TaskId);
+			Assert.Equal(_utcTime, createdTask.Created);
+			Assert.Equal(_utcTime, createdTask.StateUpdated);
+		}
+		#endregion
+
+		#region Update
+		[Fact]
+		public void Update_Returns_Response_Updated()
+		{
+			// Arrange
+			var update = new TaskUpdateDTO
+			{
+				Id = 1,
+				State = State.Resolved
+			};
+			// Act
+			var result = _repository.Update(update);
+			// Assert
+			Assert.Equal(Response.Updated, result);
+		}
+
+		[Fact]
+		public void Update_Nonexsisting_Returns_Respones_NotFound()
+		{
+			// Arrange
+			var update = new TaskUpdateDTO
+			{
+				Id = 6,
+				State = State.Resolved
+			};
+			// Act
+			var result = _repository.Update(update);
+			// Assert
+			Assert.Equal(Response.NotFound, result);
+		}
+
+		[Fact]
+		public void Update_Changes_State()
+		{
+			// Arrange
+			var update = new TaskUpdateDTO
+			{
+				Id = 1,
+				State = State.Resolved
+			};
+			// Act
+			var result = _repository.Update(update);
+			// Assert
+			Assert.Equal(State.Resolved, _repository.Read(1).State);
+		}
+
+		[Fact]
+		public void Update_Changes_Time()
+		{
+			// Arrange
+			var update = new TaskUpdateDTO
+			{
+				Id = 1,
+				State = State.Resolved
+			};
+			// Act
+			var result = _repository.Update(update);
+			// Assert
+			Assert.Equal(_utcTime, _repository.Read(1).StateUpdated);
+		}
+		#endregion
+
+		#region Delete
+		[Fact]
+		public void Delete_Existing_Responds_Deleted()
+		{
+			// Arrange
+			var deleteId = 1;
+			// Act
+			var result = _repository.Delete(deleteId);
+			// Assert
+			Assert.Equal(Response.Deleted, result);
+		}
+
+		[Fact]
+		public void Delete_Nonexisting_Responds_NotFound()
+		{
+			// Arrange
+			var deleteId = 6;
+			// Act
+			var result = _repository.Delete(deleteId);
+			// Assert
+			Assert.Equal(Response.NotFound, result);
+		}
+
+		[Fact]
+		public void Delete_New_Removes_From_Database()
+		{
+			// Arrange
+			var deleteId = 3;
+			// Act
+			_repository.Delete(deleteId);
+			// Assert
+			Assert.Null(_repository.Read(deleteId));
 		}
 		#endregion
 
