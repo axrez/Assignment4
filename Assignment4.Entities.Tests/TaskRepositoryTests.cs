@@ -38,18 +38,21 @@ namespace Assignment4.Entities.Tests
 
 			// Create test data
 			#region Tasks
-			var implementTaskRepo = new Task {
-					Id = 1,
-					Title = "Implement TaskRepository",
-					Description = "Implement ITaskRepository in the TaskRepository class.",
-					state = State.Active,
-					tags = new[] { assignment, test }
-				};
+			var implementTaskRepo = new Task
+			{
+				Id = 1,
+				Title = "Implement TaskRepository",
+				Description = "Implement ITaskRepository in the TaskRepository class.",
+				AssignedToName = "Magnus",
+				state = State.Active,
+				tags = new[] { assignment, test }
+			};
 			var cryOverErrors = new Task
 			{
 				Id = 2,
 				Title = "Cry over errors",
 				Description = "WHY DOES IT NOT JUST WORK!?!?!?",
+				AssignedToName = "Magnus",
 				state = State.Resolved,
 				tags = new[] { confusing }
 			};
@@ -58,6 +61,7 @@ namespace Assignment4.Entities.Tests
 				Id = 3,
 				Title = "Add the thing",
 				Description = "Sorry nvm.",
+				AssignedToName = "Emil",
 				state = State.New,
 				tags = new[] { extra, confusing }
 			};
@@ -66,6 +70,7 @@ namespace Assignment4.Entities.Tests
 				Id = 4,
 				Title = "Setup stuff",
 				Description = "The stuff needs to be set up.",
+				AssignedToName = "Emil",
 				state = State.Closed,
 				tags = new[] { confusing, test }
 			};
@@ -74,6 +79,7 @@ namespace Assignment4.Entities.Tests
 				Id = 5,
 				Title = "Bad idea",
 				Description = "Trust me, it'll be great!",
+				AssignedToName = null,
 				state = State.Removed,
 				tags = new Tag[] { }
 			};
@@ -138,7 +144,7 @@ namespace Assignment4.Entities.Tests
 			Assert.Equal("Implement TaskRepository", task.Title);
 			Assert.Equal("Implement ITaskRepository in the TaskRepository class.", task.Description);
 			Assert.Equal(new DateTime(), task.Created);
-			Assert.Equal(null, task.AssignedToName);
+			Assert.Equal("Magnus", task.AssignedToName);
 			Assert.Equal(State.Active, task.State);
 			Assert.Equal(new DateTime(), task.StateUpdated);
 		}
@@ -151,28 +157,28 @@ namespace Assignment4.Entities.Tests
 				new TaskDTO(
 					1,
 					"Implement TaskRepository",
-					null,
+					"Magnus",
 					new[] { assignment.Name, test.Name },
 					State.Active
 				),
 				new TaskDTO(
 					2,
 					"Cry over errors",
-					null,
+					"Magnus",
 					new[] { confusing.Name },
 					State.Resolved
 				),
 				new TaskDTO(
 					3,
 					"Add the thing",
-					null,
+					"Emil",
 					new[] { extra.Name, confusing.Name },
 					State.New
 				),
 				new TaskDTO(
 					4,
 					"Setup stuff",
-					null,
+					"Emil",
 					new[] { confusing.Name, test.Name },
 					State.Closed
 				),
@@ -199,7 +205,7 @@ namespace Assignment4.Entities.Tests
 				new TaskDTO(
 					1,
 					"Implement TaskRepository",
-					null,
+					"Magnus",
 					new[] { assignment.Name, test.Name },
 					State.Active
 				)
@@ -239,21 +245,21 @@ namespace Assignment4.Entities.Tests
 				new TaskDTO(
 					2,
 					"Cry over errors",
-					null,
+					"Magnus",
 					new[] { confusing.Name },
 					State.Resolved
 				),
 				new TaskDTO(
 					3,
 					"Add the thing",
-					null,
+					"Emil",
 					new[] { extra.Name, confusing.Name },
 					State.New
 				),
 				new TaskDTO(
 					4,
 					"Setup stuff",
-					null,
+					"Emil",
 					new[] { confusing.Name, test.Name },
 					State.Closed
 				)
@@ -273,14 +279,14 @@ namespace Assignment4.Entities.Tests
 				new TaskDTO(
 					3,
 					"Add the thing",
-					null,
+					"Emil",
 					new[] { extra.Name, confusing.Name },
 					State.New
 				),
 				new TaskDTO(
 					4,
 					"Setup stuff",
-					null,
+					"Emil",
 					new[] { confusing.Name, test.Name },
 					State.Closed
 				)
