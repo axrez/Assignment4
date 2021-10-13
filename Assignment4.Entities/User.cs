@@ -6,6 +6,7 @@ namespace Assignment4.Entities
 {
     public class User
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
@@ -14,7 +15,6 @@ namespace Assignment4.Entities
         public string Name { get; set; }
 
         [Required]
-        [Key]
         [MaxLength(100)]
         public string Email { get; set; }
 
