@@ -6,12 +6,12 @@ namespace Assignment4.Entities
 {
     public class Tag
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [MaxLength(50)]
         [Required]
-        [Key]
         public string Name { get; set; }
 
         public ICollection<Task> tasks { get; set; }

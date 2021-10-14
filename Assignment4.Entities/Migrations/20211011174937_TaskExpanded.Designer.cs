@@ -4,14 +4,16 @@ using Assignment4.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Assignment4.Entities.Migrations
 {
     [DbContext(typeof(KanbanContext))]
-    partial class KanbanContextModelSnapshot : ModelSnapshot
+    [Migration("20211011174937_TaskExpanded")]
+    partial class TaskExpanded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,8 +64,8 @@ namespace Assignment4.Entities.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("state")
                         .IsRequired()
@@ -71,29 +73,28 @@ namespace Assignment4.Entities.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserEmail");
 
                     b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Assignment4.Entities.User", b =>
                 {
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Email");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -120,7 +121,7 @@ namespace Assignment4.Entities.Migrations
                 {
                     b.HasOne("Assignment4.Entities.User", null)
                         .WithMany("tasks")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserEmail");
                 });
 
             modelBuilder.Entity("TagTask", b =>
