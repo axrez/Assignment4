@@ -92,14 +92,14 @@ namespace Assignment4.Entities.Tests
 				Id = 1,
 				Email = "daml@itu.dk",
 				Name = "Magnus",
-				tasks = new[] { implementTaskRepo, cryOverErrors }
+				tasks = new List<Task> { implementTaskRepo, cryOverErrors }
 			};
 			var emil = new User
 			{
 				Id = 2,
 				Email = "emio@itu.dk",
 				Name = "Emil",
-				tasks = new[] { addTheThing, setupStuff }
+				tasks = new List<Task> { addTheThing, setupStuff }
 			};
 			#endregion
 
@@ -351,6 +351,47 @@ namespace Assignment4.Entities.Tests
 			Assert.Equal(_utcTime, createdTask.Created);
 			Assert.Equal(_utcTime, createdTask.StateUpdated);
 		}
+
+		[Fact]
+		public void Create_With_Nonexisting_Tag_Creates_Tag()
+		{
+			// Arrange
+			var newTask = new TaskCreateDTO {
+				Title = "New Task",
+				AssignedToId = 1,
+				Description = "Unimaginative description",
+				Tags = new[] { confusing.Name, "Super Secret Tag"}
+			};
+			// Act
+			_repository.Create(newTask);
+			// Assert
+			Assert.NotNull((
+				from t in _context.Tags
+				where t.Name == "Super Secret Tag"
+				select t
+			).FirstOrDefault());
+		}
+		
+		[Fact]
+		public void Create_Adds_Task_To_User()
+		{
+			// Arrange
+			var newTask = new TaskCreateDTO {
+				Title = "New Task",
+				AssignedToId = 1,
+				Description = "Unimaginative description",
+				Tags = new[] { assignment.Name, confusing.Name }
+			};
+			// Act
+			var result = _repository.Create(newTask);
+			// Assert
+			var user = (
+				from u in _context.Users
+				where u.Id == newTask.AssignedToId
+				select u
+			).FirstOrDefault();
+			Assert.Contains(result.TaskId, from t in user.tasks select t.Id);
+		}
 		#endregion
 
 		#region Update
@@ -447,6 +488,29 @@ namespace Assignment4.Entities.Tests
 			_repository.Delete(deleteId);
 			// Assert
 			Assert.Null(_repository.Read(deleteId));
+		}
+
+		[Theory]
+		[InlineData(2)]
+		[InlineData(4)]
+		[InlineData(5)]
+		public void Delete_Resolved_Closed_Or_Removed_Responds_Conflict(int deleteId)
+		{
+			// Act
+			var results = _repository.Delete(deleteId);
+			// Assert
+			Assert.Equal(Response.Conflict, results);
+		}
+
+		[Fact]
+		public void Delete_Active_Makes_It_Removed()
+		{
+			// Arrange
+			var deleteId = 1;
+			// Act
+			_repository.Delete(deleteId);
+			// Assert
+			Assert.Equal(State.Removed, _repository.Read(deleteId).State);
 		}
 		#endregion
 

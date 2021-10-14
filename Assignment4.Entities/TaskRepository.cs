@@ -40,7 +40,10 @@ namespace Assignment4.Entities
                 from t in _context.Tags.ToList()
                 join s in task.Tags on t.Name equals s
                 select t
-            ).ToArray();
+            ).ToList();
+
+			if (tags.Count() != task.Tags.Count())
+				tags = tags.Concat(CreateMissingTags(tags, task.Tags)).ToList();
             
             var utcNow = UtcTime;
 
@@ -56,6 +59,9 @@ namespace Assignment4.Entities
 			};
 
             _context.Tasks.Add(newTask);
+
+			assignedUser.tasks.Add(newTask);
+
             _context.SaveChanges();
 
             return (Response.Created, newTask.Id);
@@ -73,6 +79,15 @@ namespace Assignment4.Entities
                 case State.New:
                     _context.Tasks.Remove(task);
                     break;
+				case State.Active:
+					task.state = State.Removed;
+					break;
+				case State.Resolved:
+					return Response.Conflict;
+				case State.Closed:
+					return Response.Conflict;
+				case State.Removed:
+					return Response.Conflict;
                 default:
                     break;
             }
@@ -187,5 +202,21 @@ namespace Assignment4.Entities
 			return Response.Updated;
 		}
 		#endregion
+
+		private IEnumerable<Tag> CreateMissingTags(IEnumerable<Tag> existing, IEnumerable<string> requested)
+		{
+			var existingStrings = from t in existing select t.Name;
+			var missingTags = new List<Tag>();
+			foreach (var str in requested)
+			{
+				if (existingStrings.Contains(str)) continue;
+				else
+				{
+					var newTag = new Tag { Name = str };
+					missingTags.Add(newTag);
+				}
+			}
+			return missingTags;
+		}
 	}
 }
